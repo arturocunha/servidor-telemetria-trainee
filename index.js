@@ -19,18 +19,14 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 
-  setInterval(() => {
-    const telemetryData = {
-      temperatura: ((-40) + Math.random() * 80).toFixed(2), // Random temperature between 20 and 35
-      velocidade: (0 + Math.random() * 10).toFixed(0)    // Random speed between 0 and 100
-    };
-    socket.emit('telemetry', telemetryData);
-    socket.emit('temperatura', telemetryData.temperatura);
-    socket.emit('velocidade', telemetryData.velocidade);
-  }, 2000); // Send telemetry data every 2 seconds
+  socket.on('sensorData', (telemetry) => {
+    console.log('Dados recebidos do ESP32:', telemetry);
+
+    socket.broadcast.emit('telemetry', telemetry);
+
+  });
 });
 
-
 server.listen(4000, () => {
-  console.log('server running at http://localhost:4000');
+  console.log('server running at http://192.168.0.117:4000');
 });
